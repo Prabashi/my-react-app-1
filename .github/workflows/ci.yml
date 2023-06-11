@@ -31,19 +31,15 @@ jobs:
     - name: Install dependencies
       # Using npm ci is generally faster than running npm i because it caches dependencies
       run: |
-        cd my-react-app-1
         npm ci
     - name: Build the app
       run: |
-        cd my-react-app-1
         npm run build
     - name: Run component tests
       run: |
-        cd my-react-app-1
         npm run test
     - name: Start the app
       # Wait 60 seconds until starts before giving an error
       run: |
-        cd my-react-app-1
         npm start &
         npx wait-on --timeout 60000

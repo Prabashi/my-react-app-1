@@ -15,7 +15,16 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      pages: 'write'
+      actions: 'write'
+      checks: 'write'
+      deployments: 'write'
     strategy:
       matrix:
         node-version: [18.x]
@@ -38,8 +47,21 @@ jobs:
     - name: Run component tests
       run: |
         npm run test
-    - name: Start the app
-      # Wait 60 seconds until starts before giving an error
-      run: |
-        npm start &
-        npx wait-on --timeout 60000
+        
+    - name: Setup Pages
+      uses: actions/configure-pages@v2
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v1
+      with:
+        # Upload build directory content
+        path: 'build/'
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v1
+      env:  
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # - name: Start the app
+    #   # Wait 60 seconds until starts before giving an error
+    #   run: |
+    #     npm start &
+    #     npx wait-on --timeout 60000
